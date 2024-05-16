@@ -5,7 +5,7 @@ import GetCelebs from "./Components/GetCelebs";
 function App() {
   return (
     <>
-      <h1>Factwise Assesment</h1>
+      <h1>FactWise Assessment</h1>
       <GetCelebs/>
       {/* <ImageAccordion /> */}
     </>
