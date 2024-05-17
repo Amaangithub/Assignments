@@ -141,14 +141,14 @@ const GetCelebs = () => {
     <div>
     <div className="search-container">
   <Form>
-    <div className="input-with-icon"  onChange={handleSearch}>
+    <div className="input-with-icon" >
       <CiSearch className="search-icon" fontSize={25} />
       <Form.Control
         size="md"
         type="text"
         placeholder="Search User ...."
         value={searchQuery}
-       
+        onChange={handleSearch}
         style={{ marginBottom: "20px", paddingLeft: "50px" }}
       />
     </div>

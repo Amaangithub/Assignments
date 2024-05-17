@@ -83,7 +83,6 @@ const CelebrityCard = ({
               {editMode && editedCelebrity.id === celebrity.id ? (
                 <Form>
                   <Form.Control
-                
                     value={`${editedCelebrity.age} Years`}
                     onChange={(e) => handleInputChange(e, "age")}
                     required
@@ -115,16 +114,13 @@ const CelebrityCard = ({
             </Col>
             <Col>
               {editMode && editedCelebrity.id === celebrity.id ? (
-                
                 <Form>
-
-                
-                <Form.Control
-               
-                  value={editedCelebrity.country}
-                  onChange={(e) => handleInputChange(e, "country")}
-                  required
-                /></Form>
+                  <Form.Control
+                    value={editedCelebrity.country}
+                    onChange={(e) => handleInputChange(e, "country")}
+                    required
+                  />
+                </Form>
               ) : (
                 celebrity.country
               )}
@@ -136,25 +132,25 @@ const CelebrityCard = ({
             <Card.Text style={{ textAlign: "left" }}>
               {editMode && editedCelebrity.id === celebrity.id ? (
                 <Form>
-                <Form.Control
-                as="textarea"
-                  type="text"
-                  className="form-control"
-                  rows="5"
-                  value={editedCelebrity.description}
-                  onChange={(e) => handleInputChange(e, "description")}
-                  required
-                  style={{
-                    height: "auto",
-                    resize: "none",
-                    overflow: "hidden",
-                  }}
-                />
+                  <Form.Control
+                    as="textarea"
+                    type="text"
+                    className="form-control"
+                    rows="5"
+                    value={editedCelebrity.description}
+                    onChange={(e) => handleInputChange(e, "description")}
+                    required
+                    style={{
+                      height: "auto",
+                      resize: "none",
+                      overflow: "hidden",
+                    }}
+                  />
                 </Form>
               ) : (
-                <div style={{ textAlign: "justify", textJustify: "auto" }}>
-                  {celebrity.description}
-                </div>
+                <span style={{ textAlign: "justify", textJustify: "auto" }}>
+                {celebrity.description}
+                </span>
               )}
             </Card.Text>
 
