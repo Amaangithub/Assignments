@@ -1,39 +1,83 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  Accordion,
-  Col,
-  Image,
-  Table,
-  Modal,
-  Button,
-  Card,
-} from "react-bootstrap";
-import { BsPencil, BsTrash3 } from "react-icons/bs";
-import { MdOutlineCancel } from "react-icons/md";
-import { TbSquareRoundedCheck } from "react-icons/tb";
+import { Accordion, Form } from "react-bootstrap";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import CelebrityCard from "./CelebrityCard";
+import { CiSearch } from "react-icons/ci";
 
 const GetCelebs = () => {
   const [jsonData, setJsonData] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeAccordion, setActiveAccordion] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editedCelebrity, setEditedCelebrity] = useState(null);
 
+  const handleAccordionClick = (id) => {
+    setActiveAccordion(activeAccordion === id ? null : id);
+  };
+
+  const handleEdit = (celebrity) => {
+    if (calculateAge(celebrity.dob) >= 18) {
+      setEditMode(true);
+      setEditedCelebrity({ ...celebrity, age: calculateAge(celebrity.dob) });
+    } else {
+      alert("Cannot edit details of a minor.");
+    }
+  };
+
+  const handleSave = () => {
+    const updatedData = jsonData.map((celebrity) => {
+      if (celebrity.id === editedCelebrity.id) {
+        const updatedCelebrity = { ...editedCelebrity };
+        const currentDate = new Date();
+        const birthYear = currentDate.getFullYear() - updatedCelebrity.age;
+        updatedCelebrity.dob = new Date(
+          birthYear,
+          currentDate.getMonth(),
+          currentDate.getDate()
+        ).toISOString();
+        return updatedCelebrity;
+      }
+      return celebrity;
+    });
+    setJsonData(updatedData);
+    setEditMode(false);
+    setEditedCelebrity(null);
+  };
+
+  const handleCancel = () => {
+    setEditMode(false);
+    setEditedCelebrity(null);
+  };
   const handleDeleteConfirm = () => {
     if (deleteId) {
       deleteData(deleteId);
       setShowDeleteModal(false);
     }
   };
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+  };
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/celebrities");
-      setJsonData(response.data);
+      const response = await axios.get("/celebrities.json");
+      if (!response.data) {
+        throw new Error("Failed to fetch data");
+      }
+      setJsonData(response.data.celebrities);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
+  const filteredData = jsonData.filter((celebrity) =>
+    `${celebrity.first} ${celebrity.last}`
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase())
+  );
   const deleteData = (id) => {
     try {
       setJsonData(jsonData.filter((item) => item.id !== id));
@@ -41,12 +85,34 @@ const GetCelebs = () => {
       console.error("Error deleting data:", error);
     }
   };
+  const isFormValid = () => {
+    const { first, last, gender, age, country, description } = editedCelebrity;
+    return first && last && age && gender && country && description;
+  };
 
   useEffect(() => {
     fetchData();
   }, []);
+  const handleInputChange = (event, field) => {
+    const { value } = event.target;
 
-  // Calculating Age
+    if (field === "age") {
+      if (/^\d+$/.test(value) || value === "") {
+        setEditedCelebrity({ ...editedCelebrity, [field]: value });
+      }
+    }
+
+    if (/^\d+$/.test(value)) {
+      setEditedCelebrity({ ...editedCelebrity, [field]: value });
+    } else if (field === "country") {
+      if (!/\d/.test(value)) {
+        setEditedCelebrity({ ...editedCelebrity, [field]: value });
+      }
+    } else {
+      setEditedCelebrity({ ...editedCelebrity, [field]: value });
+    }
+  };
+
   const calculateAge = (dobString) => {
     const dob = new Date(dobString);
     const currentDate = new Date();
@@ -54,83 +120,78 @@ const GetCelebs = () => {
     const age = Math.abs(ageDate.getUTCFullYear() - 1970);
     return age;
   };
+  const handleInputClick = (event) => {
+    event.stopPropagation();
+  };
 
-  // Returning the JSX
+  const handleNameInputChange = (e) => {
+    const { value } = e.target;
+
+    const [firstName, ...lastNameArray] = value.split(" ");
+    const lastName = lastNameArray.join(" ");
+
+    setEditedCelebrity((prev) => ({
+      ...prev,
+      first: firstName,
+      last: lastName,
+    }));
+  };
+
   return (
     <div>
-      {/* Mapping Data */}
-      {jsonData.map((celebrity) => (
-        <div key={celebrity.id} style={{ marginBottom: "20px" }}>
-          {/* Accordion Started */}
-          <Accordion >
-            {/* Accordion for Name, Image */}
-            <Accordion.Item eventKey={celebrity.id}>
-              <Card style={{ width: "400px"}}>
-                <Accordion.Header>
-                  <div>
-                    <Col>
-                      <Image
-                        src={celebrity.picture}
-                        roundedCircle
-                        style={{ width: "50px", height: "50px" }}
-                      />
-                    </Col>
-                  </div>
-                  {`${celebrity.first} ${celebrity.last}`}
-                </Accordion.Header>
-
-                {/* Accordion for Age, Gender, Country & Description */}
-                <Accordion.Body>
-                  <Table>
-                    <thead style={{ color: "grey" }}>
-                      <th>Age</th>
-                      <th>Gender</th>
-                      <th>Country</th>
-                    </thead>
-                    <tbody>
-                      <td>{calculateAge(celebrity.dob)}</td>
-                      <td>{celebrity.gender.charAt(0).toUpperCase() + celebrity.gender.slice(1)}</td>
-                      <td>{celebrity.country}</td>
-                    </tbody>
-                  </Table>
-                  <Card.Text style={{ textAlign: "left" }}>
-                    {celebrity.description}
-                  </Card.Text>{" "}
-                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <BsTrash3
-                      color="red"
-                      onClick={() => {
-                        setShowDeleteModal(true);
-                        setDeleteId(celebrity.id);
-                      }}
-                    />
-                
-                      {" "}
-                      <BsPencil color="blue" style={{ marginLeft: "30px" }}/>
-                   
-                  </div>
-                </Accordion.Body>
-              </Card>
-            </Accordion.Item>
-          </Accordion>
-        </div>
-      ))}
-      <MdOutlineCancel color="red" />
-      <TbSquareRoundedCheck color="green" />
-
-      {/* Delete Confirmation Modal */}
-      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+    <div className="search-container">
+  <Form>
+    <div className="input-with-icon"  onChange={handleSearch}>
+      <CiSearch className="search-icon" fontSize={25} />
+      <Form.Control
+        size="md"
+        type="text"
+        placeholder="Search User ...."
+        value={searchQuery}
        
-        <Modal.Header closeButton className="no-border">Are you sure you want to delete ?</Modal.Header>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleDeleteConfirm}>
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        style={{ marginBottom: "20px", paddingLeft: "50px" }}
+      />
+    </div>
+  </Form>
+</div>
+
+
+      <div>
+        {filteredData.map((celebrity) => (
+          <div key={celebrity.id} style={{ marginBottom: "20px" }}>
+            <Accordion>
+              <Accordion.Item
+                eventKey={celebrity.id}
+                onClick={() => handleAccordionClick(celebrity.id)}
+              >
+                <CelebrityCard
+                  celebrity={celebrity}
+                  editMode={editMode}
+                  editedCelebrity={editedCelebrity}
+                  handleInputChange={handleInputChange}
+                  calculateAge={calculateAge}
+                  handleEdit={handleEdit}
+                  handleSave={handleSave}
+                  isFormValid={isFormValid}
+                  handleDelete={handleDeleteConfirm}
+                  handleNameInputChange={handleNameInputChange}
+                  handleClick={handleAccordionClick}
+                  handleInputClick={handleInputClick}
+                  setDeleteId={setDeleteId}
+                  setShowDeleteModal={setShowDeleteModal}
+                  handleCancel={handleCancel}
+                />
+              </Accordion.Item>
+            </Accordion>
+          </div>
+        ))}
+
+        <DeleteConfirmationModal
+          showDeleteModal={showDeleteModal}
+          setShowDeleteModal={setShowDeleteModal}
+          handleDeleteConfirm={handleDeleteConfirm}
+        />
+      </div>
     </div>
   );
 };

@@ -2,44 +2,85 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
+  /* text-align: center; */
+  --bs-border-radius: 20px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-.no-border {
-  border: none !important;
+.accordion-header {
+  background-color: transparent !important;
+  border: none;
+  --bs-accordion-active-bg: transparent;
+  --bs-accordion-btn-focus-box-shadow: none;
+  --bs-accordion-border-color: none;
+  --bs-accordion-btn-bg: none;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.table {
+  --bs-border-width: 0;
+  color: grey;
+  padding: 0;
+}
+.accordion-button {
+  --bs-accordion-active-color: "black";
+}
+
+.form-control {
+  --bs-border-radius: 10px;
+}
+.form-select {
+  --bs-border-radius: 10px;
+  width: 100%;
+}
+
+/* .col{
+  color: grey;
+} */
+
+.card-subtitle.h6 {
+  margin: 10px auto;
+  color: grey;
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.search-input {
+  padding-left: 50px;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #999;
+}
+
+
+.accordion-button::after {
+  --bs-accordion-btn-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-plus-lg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2'/%3E%3C/svg%3E");}
+
+  .accordion-button:not(.collapsed)::after{
+    --bs-accordion-btn-active-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-dash-lg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8'/%3E%3C/svg%3E");
   }
-  to {
-    transform: rotate(360deg);
+  .no-border {
+    border: none !important;
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  
+  .btn-outline-secondary  {
+    --bs-btn-hover-color: grey; 
+    --bs-btn-hover-bg: transparent;
+    --bs-btn-active-color: grey;
+    --bs-btn-active-bg: transparent;
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
+  .btn{
+    --bs-border-radius :0.675rem
+  }
+  /* --bs-btn-border-radius: var(--bs-border-radius); */
