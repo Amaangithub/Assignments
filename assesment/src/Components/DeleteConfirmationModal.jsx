@@ -11,11 +11,11 @@ const DeleteConfirmationModal = ({
       <Modal.Header closeButton className="no-border">
         Are you sure you want to delete ?
       </Modal.Header>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+      <Modal.Footer className="no-border">
+        <Button variant="outline-secondary" style={{ width: "100px" }} onClick={() => setShowDeleteModal(false)}>
           Cancel
         </Button>
-        <Button variant="danger" onClick={handleDeleteConfirm}>
+        <Button variant="danger" style={{ width: "100px" }} onClick={handleDeleteConfirm}>
           Delete
         </Button>
       </Modal.Footer>
@@ -24,6 +24,7 @@ const DeleteConfirmationModal = ({
 };
 
 export default DeleteConfirmationModal;
+
 DeleteConfirmationModal.propTypes = {
   showDeleteModal: PropTypes.bool.isRequired,
   setShowDeleteModal: PropTypes.func.isRequired,

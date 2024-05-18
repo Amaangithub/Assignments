@@ -1,9 +1,16 @@
-import { Card, Table } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { MdOutlineDeleteForever } from "react-icons/md";
 import { BsPencil, BsTrash3 } from "react-icons/bs";
-import { Accordion, Col, Image } from "react-bootstrap";
+import {
+  Card,
+  Accordion,
+  Col,
+  Image,
+  Container,
+  Row,
+  Form,
+} from "react-bootstrap";
 import { RiCheckboxCircleLine } from "react-icons/ri";
+import { MdOutlineCancel } from "react-icons/md";
 
 const CelebrityCard = ({
   celebrity,
@@ -18,62 +25,80 @@ const CelebrityCard = ({
   setDeleteId,
   handleInputClick,
   handleNameInputChange,
+  handleCancel,
 }) => {
   return (
-    <Card style={{ width: "400px" }}>
-      <Accordion.Header>
-        <div>
+    <Card style={{ width: "500px" }}>
+      <Accordion.Header
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          background: "transparent",
+        }}
+      >
+        <div style={{ marginRight: "20px" }}>
           <Col>
             <Image
               src={celebrity.picture}
               roundedCircle
-              style={{ width: "50px", height: "50px" }}
+              style={{ width: "70px", height: "70px" }}
             />
           </Col>
         </div>
 
-        <td onClick={(e) => handleInputClick(e)}>
+        <div
+          onClick={(e) => handleInputClick(e)}
+          style={{
+            fontSize: "21px",
+            marginLeft: "20px",
+          }}
+        >
           {editMode && editedCelebrity.id === celebrity.id ? (
             <input
               type="text"
               value={`${editedCelebrity.first} ${editedCelebrity.last}`}
               onChange={(e) => handleNameInputChange(e, "name")}
               className="form-control form-control-md"
+              style={{ fontSize: "20px" }}
               required
             />
           ) : (
-            `${celebrity.first} ${celebrity.last}`
+            ` ${celebrity.first} ${celebrity.last}`
           )}
-        </td>
+        </div>
       </Accordion.Header>
 
       <Accordion.Body>
-        <Table>
-          <th style={{ color: "grey", border: "none" }}>Age</th>
-          <th style={{ color: "grey", border: "none" }}>Gender</th>
-          <th style={{ color: "grey", border: "none" }}>Country</th>
+        <Container>
+          <Row>
+            <Col style={{ color: "grey", fontWeight: "bold" }}>Age</Col>
+            <Col style={{ color: "grey", fontWeight: "bold" }}>Gender</Col>
+            <Col style={{ color: "grey", fontWeight: "bold" }}>Country</Col>
+          </Row>
 
-          <tbody>
-            <td style={{ border: "none", text: "center" }}>
+          <Row>
+            <Col>
               {editMode && editedCelebrity.id === celebrity.id ? (
-                <input
-                  type="text"
-                  value={editedCelebrity.age}
-                  onChange={(e) => handleInputChange(e, "age")}
-                  className="form-control form-control-md"
-                  required
-                />
+                <Form>
+                  <Form.Control
+                    value={`${editedCelebrity.age} Years`}
+                    onChange={(e) => handleInputChange(e, "age")}
+                    required
+                  />
+                </Form>
               ) : (
-                calculateAge(celebrity.dob)
+                `${calculateAge(celebrity.dob)} Years`
               )}
-            </td>
-            <td style={{ border: "none" }}>
+            </Col>
+            <Col>
               {editMode && editedCelebrity.id === celebrity.id ? (
-                <select
+                <Form.Select
                   value={editedCelebrity.gender}
                   onChange={(e) => handleInputChange(e, "gender")}
-                  className="form-control form-control-md custom-select"
                   required
+                  aria-label="Default select"
                 >
                   <option value="">Select gender</option>
                   <option value="male">Male</option>
@@ -81,82 +106,97 @@ const CelebrityCard = ({
                   <option value="transgender">Transgender</option>
                   <option value="rather not say">Rather not say</option>
                   <option value="other">Other</option>
-                </select>
+                </Form.Select>
               ) : (
                 celebrity.gender.charAt(0).toUpperCase() +
                 celebrity.gender.slice(1)
               )}
-            </td>
-            <td style={{ border: "none" }}>
+            </Col>
+            <Col>
               {editMode && editedCelebrity.id === celebrity.id ? (
-                <input
-                  type="text"
-                  className="form-control form-control-md"
-                  value={editedCelebrity.country}
-                  onChange={(e) => handleInputChange(e, "country")}
-                  required
-                />
+                <Form>
+                  <Form.Control
+                    value={editedCelebrity.country}
+                    onChange={(e) => handleInputChange(e, "country")}
+                    required
+                  />
+                </Form>
               ) : (
                 celebrity.country
               )}
-            </td>
-          </tbody>
-        </Table>
-        <Card.Text style={{ textAlign: "left" }}>
-          {editMode && editedCelebrity.id === celebrity.id ? (
-            <textarea
-              type="text"
-              className="form-control"
-              rows="8"
-              value={editedCelebrity.description}
-              onChange={(e) => handleInputChange(e, "description")}
-              required
+            </Col>
+          </Row>
+
+          <Col>
+            <Card.Subtitle>Description</Card.Subtitle>
+            <Card.Text style={{ textAlign: "left" }}>
+              {editMode && editedCelebrity.id === celebrity.id ? (
+                <Form>
+                  <Form.Control
+                    as="textarea"
+                    type="text"
+                    className="form-control"
+                    rows="6"
+                    value={editedCelebrity.description}
+                    onChange={(e) => handleInputChange(e, "description")}
+                    required
+                    style={{
+                      height: "auto",
+                      resize: "none",
+                      overflow: "hidden",
+                    }}
+                  />
+                </Form>
+              ) : (
+                <span style={{ textAlign: "justify", textJustify: "auto" }}>
+                {celebrity.description}
+                </span>
+              )}
+            </Card.Text>
+
+            <div
               style={{
-                height: "auto",
-                resize: "none",
-                overflow: "hidden",
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: "10px",
               }}
-            />
-          ) : (
-            <div>{celebrity.description}</div>
-          )}
-        </Card.Text>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          {editMode && editedCelebrity.id === celebrity.id ? (
-            <>
-              <MdOutlineDeleteForever
-                color="red"
-                fontSize={25}
-                onClick={() => {
-                  setShowDeleteModal(true);
-                  setDeleteId(celebrity.id);
-                }}
-              />
-              <RiCheckboxCircleLine
-                onClick={handleSave}
-                disabled={!isFormValid()}
-                style={{ marginLeft: "30px" }}
-                color="green"
-                fontSize={25}
-              />
-            </>
-          ) : (
-            <>
-              <BsTrash3
-                color="red"
-                onClick={() => {
-                  setShowDeleteModal(true);
-                  setDeleteId(celebrity.id);
-                }}
-              />
-              <BsPencil
-                color="blue"
-                style={{ marginLeft: "30px" }}
-                onClick={() => handleEdit(celebrity)}
-              />
-            </>
-          )}
-        </div>
+            >
+              {editMode && editedCelebrity.id === celebrity.id ? (
+                <div style={{ marginTop: "5px" }}>
+                  <MdOutlineCancel
+                    color="red"
+                    fontSize={25}
+                    onClick={handleCancel}
+                  />
+                  <RiCheckboxCircleLine
+                    onClick={handleSave}
+                    disabled={!isFormValid()}
+                    style={{ marginLeft: "30px" }}
+                    color="green"
+                    fontSize={25}
+                  />
+                </div>
+              ) : (
+                <>
+                  <BsTrash3
+                    color="red"
+                    fontSize={20}
+                    onClick={() => {
+                      setShowDeleteModal(true);
+                      setDeleteId(celebrity.id);
+                    }}
+                  />
+                  <BsPencil
+                    color="blue"
+                    fontSize={20}
+                    style={{ marginLeft: "30px" }}
+                    onClick={() => handleEdit(celebrity)}
+                  />
+                </>
+              )}
+            </div>
+          </Col>
+        </Container>
       </Accordion.Body>
     </Card>
   );
@@ -165,18 +205,19 @@ const CelebrityCard = ({
 export default CelebrityCard;
 
 CelebrityCard.propTypes = {
-  celebrity: PropTypes.bool.isRequired,
+  celebrity: PropTypes.object.isRequired,
   editMode: PropTypes.bool.isRequired,
-  editedCelebrity: PropTypes.bool.isRequired,
+  editedCelebrity: PropTypes.object,
   handleInputChange: PropTypes.func.isRequired,
   calculateAge: PropTypes.func.isRequired,
   handleEdit: PropTypes.func.isRequired,
   handleSave: PropTypes.func.isRequired,
-  isFormValid: PropTypes.bool.isRequired,
+  isFormValid: PropTypes.func,
   handleDelete: PropTypes.func.isRequired,
   handleNameInputChange: PropTypes.func.isRequired,
-  handleAccordionClick: PropTypes.func.isRequired,
+  handleAccordionClick: PropTypes.func,
   handleInputClick: PropTypes.func.isRequired,
   setDeleteId: PropTypes.func.isRequired,
   setShowDeleteModal: PropTypes.func.isRequired,
+  handleCancel: PropTypes.func,
 };

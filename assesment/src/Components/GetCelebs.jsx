@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Accordion } from "react-bootstrap";
-import { MdOutlineCancel } from "react-icons/md";
-import { TbSquareRoundedCheck } from "react-icons/tb";
+import { Accordion, Form } from "react-bootstrap";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import CelebrityCard from "./CelebrityCard";
+import { CiSearch } from "react-icons/ci";
 
 const GetCelebs = () => {
   const [jsonData, setJsonData] = useState([]);
@@ -47,10 +46,11 @@ const GetCelebs = () => {
     setEditMode(false);
     setEditedCelebrity(null);
   };
-  // const handleCancel = () => {
-  //   setEditMode(false);
-  //   setEditedCelebrity(null);
-  // };
+
+  const handleCancel = () => {
+    setEditMode(false);
+    setEditedCelebrity(null);
+  };
   const handleDeleteConfirm = () => {
     if (deleteId) {
       deleteData(deleteId);
@@ -112,7 +112,7 @@ const GetCelebs = () => {
       setEditedCelebrity({ ...editedCelebrity, [field]: value });
     }
   };
-  // Calculating Age
+
   const calculateAge = (dobString) => {
     const dob = new Date(dobString);
     const currentDate = new Date();
@@ -139,19 +139,22 @@ const GetCelebs = () => {
 
   return (
     <div>
-      <div className="container">
-        <div className="row justify-content-center mt-4 mb-4 w-full">
-          <div className="col-md-14">
-            <input
-              type="text"
-              placeholder="Search celebrities..."
-              value={searchQuery}
-              onChange={handleSearch}
-              className="form-control"
-            />
-          </div>
-        </div>
-      </div>
+    <div className="search-container">
+  <Form>
+    <div className="input-with-icon" >
+      <CiSearch className="search-icon" fontSize={25} />
+      <Form.Control
+        size="md"
+        type="text"
+        placeholder="Search User ...."
+        value={searchQuery}
+        onChange={handleSearch}
+        style={{ marginBottom: "20px", paddingLeft: "50px" }}
+      />
+    </div>
+  </Form>
+</div>
+
 
       <div>
         {filteredData.map((celebrity) => (
@@ -176,13 +179,12 @@ const GetCelebs = () => {
                   handleInputClick={handleInputClick}
                   setDeleteId={setDeleteId}
                   setShowDeleteModal={setShowDeleteModal}
+                  handleCancel={handleCancel}
                 />
               </Accordion.Item>
             </Accordion>
           </div>
         ))}
-        <MdOutlineCancel color="red" />
-        <TbSquareRoundedCheck color="green" />
 
         <DeleteConfirmationModal
           showDeleteModal={showDeleteModal}
