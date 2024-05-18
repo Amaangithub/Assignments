@@ -5,7 +5,6 @@ import GetCelebs from "./Components/GetCelebs";
 function App() {
   return (
     <>
-    
       <GetCelebs/>
     
     </>
