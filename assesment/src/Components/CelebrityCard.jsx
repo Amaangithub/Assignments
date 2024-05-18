@@ -136,7 +136,7 @@ const CelebrityCard = ({
                     as="textarea"
                     type="text"
                     className="form-control"
-                    rows="5"
+                    rows="6"
                     value={editedCelebrity.description}
                     onChange={(e) => handleInputChange(e, "description")}
                     required
